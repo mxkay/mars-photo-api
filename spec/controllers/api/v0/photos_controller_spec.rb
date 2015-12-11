@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-describe Api::V1::PhotosController do
-  let(:rover) { create(:rover) }
-  let(:camera) { create(:camera) }
-
+describe Api::V0::PhotosController do
   describe "GET 'index'" do
+
+    let(:rover) { create(:rover) }
+    let(:camera) { create(:camera, rover: rover) }
 
     context "with no query parameters" do
       let!(:photo) { create(:photo, rover: rover) }
@@ -12,12 +12,13 @@ describe Api::V1::PhotosController do
         get :index, { rover_id: rover.name.downcase }
       end
 
-      it "returns http 400 bad request" do
-        expect(response.status).to eq 400
+      it "defaults to max sol" do
+        expect(response.status).to eq 200
       end
 
-      it "renders error json" do
-        expect(response.body).to eq({ errors: "No Photos Found" }.to_json)
+      it "renders photo data matching sol" do
+        expect(json["photos"].length).to eq 1
+        expect(json["photos"].first["sol"]).to eq photo.sol
       end
     end
 
@@ -68,7 +69,7 @@ describe Api::V1::PhotosController do
     end
 
     context "with sol and camera query" do
-      let(:photo) { create(:photo, rover: rover, camera: camera) }
+      let!(:photo) { create(:photo, rover: rover, camera: camera) }
       before(:each) do
         get :index, { rover_id: rover.name, sol: 829, camera: camera.name }
       end
@@ -109,7 +110,7 @@ describe Api::V1::PhotosController do
         expect(response.status).to eq 200
       end
 
-      it "renders photo data matching Earth date and camera" do
+      it "renders photo data matching sol and camera" do
         expect(json["photos"].length).to eq 1
         expect(json["photos"].first["camera"]["name"]).to eq camera.name
       end

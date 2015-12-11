@@ -10,7 +10,7 @@ class Photo < ActiveRecord::Base
   SECONDS_PER_DAY = 86400
 
   def self.search(params, rover)
-    photos = search_by_date(params)
+    photos = search_by_date(params, rover)
     if params[:camera]
       if photos.any?
         photos = photos.search_by_camera(params, rover)
@@ -19,13 +19,14 @@ class Photo < ActiveRecord::Base
     photos
   end
 
-  def self.search_by_date(params)
+  def self.search_by_date(params, rover_name)
     if params[:sol]
       photos = where(sol: params[:sol])
     elsif params[:earth_date]
       photos = where(earth_date: Date.strptime(params[:earth_date]))
     else
-      photos = Photo.none
+      rover = Rover.find_by(name: rover_name.titleize)
+      photos = where(sol: rover.max_sol)
     end
     photos
   end
