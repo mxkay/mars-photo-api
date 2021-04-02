@@ -4,15 +4,27 @@ class Api::V1::PhotosController < ApplicationController
   def show
     photo = Photo.find params[:id]
 
-    resize_photo photo, params
+    error = resize_photo photo, params
 
-    render json: photo, serializer: PhotoSerializer, root: :photo
+    if error.nil?
+      render json: photo, serializer: PhotoSerializer, root: :photo
+    else
+      render json: { errors: error }, status: :bad_request
+    end
   end
 
   def index
     rover = Rover.find_by name: params[:rover_id].titleize
+
     if rover
-      render json: search_photos(rover), each_serializer: PhotoSerializer, root: :photos
+      photos = search_photos(rover)
+      error = resize_photos photos, params
+
+      if error.nil?
+        render json: photos, each_serializer: PhotoSerializer, root: :photos
+      else
+        render json: { errors: error }, status: :bad_request
+      end
     else
       render json: { errors: "Invalid Rover Name" }, status: :bad_request
     end
@@ -29,8 +41,6 @@ class Api::V1::PhotosController < ApplicationController
     if params[:page]
       photos = photos.page(params[:page]).per params[:per_page]
     end
-
-    resize_photos photos, params
 
     photos
   end
