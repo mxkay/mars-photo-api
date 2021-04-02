@@ -35,13 +35,4 @@ class Api::V1::PhotosController < ApplicationController
   def photo_params
     params.permit :sol, :camera, :earth_date, :size
   end
-
-  def search_photos(rover)
-    photos = rover.photos.order(:camera_id, :id).search photo_params, rover
-    if params[:page]
-      photos = photos.page(params[:page]).per params[:per_page]
-    end
-
-    photos
-  end
 end
