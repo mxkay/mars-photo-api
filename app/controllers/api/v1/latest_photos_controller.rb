@@ -20,6 +20,6 @@ class Api::V1::LatestPhotosController < ApplicationController
   private
 
   def photo_params
-    params.permit(:camera, :earth_date).merge(sol: @rover.photos.maximum(:sol))
+    params.permit(:camera, :earth_date, :size).merge(sol: @rover.photos.maximum(:sol))
   end
 end
