@@ -32,6 +32,8 @@ Along with querying by date, results can also be filtered by the camera with whi
    FRONT_HAZCAM_RIGHT_A|Front Hazard Avoidance Camera - Right
    REAR_HAZCAM_LEFT|Rear Hazard Avoidance Camera - Left
    REAR_HAZCAM_RIGHT|Rear Hazard Avoidance Camera - Right
+   SKYCAM|MEDA Skycam
+   SHERLOC_WATSON|SHERLOC WATSON Camera
 
 #### Other rovers
 
@@ -80,6 +82,21 @@ https://api.nasa.gov/mars-photos/api/v1/rovers/opportunity/photos?api_key=DEMO_K
 If you just want to receive photo data for the most recent Sol for which photos exist for a particular rover, you can visit the `/latest_photos` endpoint.
 
 https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/latest_photos?api_key=DEMO_KEY
+
+#### Size parameter:
+
+Specify the size of the photo you would like to receive. Default value is `large`. Notice only Perseverance photos have a guaranteed width.
+
+https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/photos?api_key=DEMO_KEY&size=small
+
+| Size Parameter Value | Format | Curiosity   | Opportunity | Spirit | Perseverance |
+|----------------------|--------|:-----------:|:-----------:|:------:|:------------:|
+| `small`              | JPEG   | ✔           | ✔           | ✔      | ✔            |
+| `medium`             | JPEG   | ✔           | ✔           | ✔      | ✔            |
+| `large`              | JPEG   | ✔           | ✔           | ✔      | ✔            |
+| `full`               | PNG    | N/A         | N/A         | N/A    | ✔            |
+
+*Note: Only **Perseverance** `small`, `medium`, and `large` size images have guaranteed widths of `300px`, `800px`, and `1200px` respectively. All other dimensions are variable.*
 
 ### Mission Manifest Endpoint
 
